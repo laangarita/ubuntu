@@ -136,8 +136,20 @@
   - name: Install theme (OSX-Arc-Shadow-master)
     shell: tar zxvf /usr/share/themes/OSX-Arc-Shadow.tar.gz -C /usr/share/themes
 
+
+  - name: Create icon theme directory
+    file:
+      path: /home/langarita/.icons
+      state: directory
+
+
   - name: Install Icon Theme (Tela-Dark)
-    shell:
+    copy:
+      src: ./Tela.tar.xz
+      dest: /home/langarita/.icons
+
+  - name: Extract icon theme
+    shell: tar zxvf /home/langarita/.icons/Tela.tar.xz -C /home/langarita/.icons
 
 
 # - name: Install WhatsApp
