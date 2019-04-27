@@ -1,0 +1,154 @@
+---
+
+- name: Set up your Ubuntu environment
+  connection: local
+  gather_facts: false
+  hosts: localhost
+  tasks:
+
+
+  - name: Update your host using apt
+    apt:
+      update_cache: yes
+      upgrade: dist
+
+
+  - name: Add apt repositories
+    apt_repository:
+      repo: "{{ item }}"
+    with_items:
+      - ppa:linrunner/tlp
+      - ppa:ubuntuhandbook1/apps
+      - ppa:webupd8team/atom
+      - ppa:jonathonf/vim
+
+
+## Reduce overheating with TLP ##
+## Reduce power consumption with laptop-mode-tools ##
+
+
+  - name: Install Ubuntu packages
+    apt:
+      name: "{{ item }}"
+      update_cache: yes
+    with_items:
+      - preload
+      - tlp
+      - tlp-rdw
+      - laptop-mode-tools
+      - ubuntu-restricted-extras
+      - gnome-tweak-tool
+      - shutter
+      - corebird
+      - software-properties-common
+      - apt-transport-https
+      - wget
+      - netcat
+
+
+  - name: Install Development Tools
+    apt:
+      name: "{{ item }}"
+      update_cache: yes
+    with_items:
+      - virtualbox
+      - atom
+      - vim
+      - openjdk-11-jdk
+
+
+  - name: Start your laptop mode tools for Linux
+    shell: "tlp start"
+    register: start_result
+    failed_when: (start_result.rc not in [ 0, 127 ])
+
+
+## Install Visual Studio Code ##
+  - name: Add Microsoft GPG Key
+    shell:  wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+
+- name: Download foo.conf
+  get_url:
+    url: http://example.com/path/file.conf
+    dest: /etc/foo.conf
+    
+
+  - name: Add Microsoft Repo
+    shell: add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+
+
+  - name: Install Visual Studio Code
+    apt:
+      name: "code"
+      update_cache: yes
+    
+
+## Install Spotify ##
+  - name: Add Spotify Key
+    apt_key:
+      keyserver: hkp://keyserver.ubuntu.com:80
+      id: 931FF8E79F0876134EDDBDCCA87FF9DF48BF1C90
+
+  - name: Add Spotify Repo
+    shell: "echo deb http://repository.spotify.com stable non-free | sudo tee /etc/apt/sources.list.d/spotify.list"
+    run_once: True
+    tags:
+      - spotify
+
+  - name: Install Spotify Client
+    apt:
+      name: spotify-client
+      update_cache: yes
+    tags:
+      - spotify
+
+## End of Spotify Install ##
+
+
+  - name: Download Skype
+    get_url: 
+      url: https://repo.skype.com/latest/skypeforlinux-64.deb
+      dest: /tmp/skypeforlinux-64.deb
+
+
+  - name: Install Skype
+    apt:
+      deb: /tmp/skypeforlinux-64.deb
+
+
+  - name: Download Google Chrome
+    get_url:
+      url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      dest: /tmp/google-chrome-stable_current_amd64.deb
+
+ 
+  - name: Install Google Chrome
+    apt: 
+      deb: /tmp/google-chrome-stable_current_amd64.deb
+
+
+  - name: Download theme (OSX-Arc-Shadow-master)
+    get_url:
+      url: https://github.com/LinxGem33/OSX-Arc-Shadow/archive/v1.3.7.tar.gz
+      dest: /usr/share/themes/OSX-Arc-Shadow.tar.gz
+
+
+  - name: Install theme (OSX-Arc-Shadow-master)
+    shell: tar zxvf /usr/share/themes/OSX-Arc-Shadow.tar.gz -C /usr/share/themes
+
+  - name: Install Icon Theme (Tela-Dark)
+    shell:
+
+
+# - name: Install WhatsApp
+# - name: Install Wallpaper
+
+
+  - name: Remove useless packages from the cache
+    apt:
+      autoclean: yes
+
+
+  - name: Remove dependencies that are no longer required
+    apt:
+      autoremove: yes

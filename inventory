@@ -1,0 +1,6 @@
+localhost
+
+[all:vars]
+ansible_user='langarita'
+ansible_become='yes'
+ansible_become_method='sudo'
