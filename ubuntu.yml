@@ -29,32 +29,14 @@
 
   - name: Install Ubuntu packages
     apt:
-      name: "{{ item }}"
+      name: ['preload', 'tlp', 'tlp-rdw', 'ubuntu-restricted-extras', 'gnome-tweak-tool', 'shutter', 'corebird', 'software-properties-common', 'apt-transport-https', 'wget', 'netcat']
       update_cache: yes
-    with_items:
-      - preload
-      - tlp
-      - tlp-rdw
-      - laptop-mode-tools
-      - ubuntu-restricted-extras
-      - gnome-tweak-tool
-      - shutter
-      - corebird
-      - software-properties-common
-      - apt-transport-https
-      - wget
-      - netcat
 
 
   - name: Install Development Tools
     apt:
-      name: "{{ item }}"
+      name: ['virtualbox', 'atom', 'vim', 'openjdk-11-jdk']
       update_cache: yes
-    with_items:
-      - virtualbox
-      - atom
-      - vim
-      - openjdk-11-jdk
 
 
   - name: Start your laptop mode tools for Linux
@@ -67,10 +49,10 @@
   - name: Add Microsoft GPG Key
     shell:  wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
 
-- name: Download foo.conf
-  get_url:
-    url: http://example.com/path/file.conf
-    dest: /etc/foo.conf
+# - name: Download foo.conf
+# get_url:
+#   url: http://example.com/path/file.conf
+#   dest: /etc/foo.conf
     
 
   - name: Add Microsoft Repo
@@ -127,15 +109,18 @@
       deb: /tmp/google-chrome-stable_current_amd64.deb
 
 
-  - name: Download theme (OSX-Arc-Shadow-master)
-    get_url:
-      url: https://github.com/LinxGem33/OSX-Arc-Shadow/archive/v1.3.7.tar.gz
-      dest: /usr/share/themes/OSX-Arc-Shadow.tar.gz
+  - name: Copy OSX Arc theme collection
+    copy:
+      src: ./osx-arc-collection_1.4.7_amd64.deb
+      dest: /root/osx-arc-collection_1.4.7_amd64.deb
 
 
-  - name: Install theme (OSX-Arc-Shadow-master)
-    shell: tar zxvf /usr/share/themes/OSX-Arc-Shadow.tar.gz -C /usr/share/themes
+  - name: Install theme (OSX-Arc-collection)
+    shell: apt install -y /root/osx-arc-collection_1.4.7_amd64.deb
 
+
+  - name: Set theme OSX Arc Darker
+    shell: gsettings set org.gnome.desktop.interface gtk-theme "OSX-Arc-Darker"
 
   - name: Create icon theme directory
     file:
@@ -143,13 +128,18 @@
       state: directory
 
 
-  - name: Install Icon Theme (Tela-Dark)
+  - name: Copy Icon Theme (Tela-Dark)
     copy:
       src: ./Tela.tar.xz
       dest: /home/langarita/.icons
 
+
   - name: Extract icon theme
-    shell: tar zxvf /home/langarita/.icons/Tela.tar.xz -C /home/langarita/.icons
+    shell: tar xvf /home/langarita/.icons/Tela.tar.xz -C /home/langarita/.icons
+
+
+  - name: Set icon theme Tela
+    shell: gsettings set org.gnome.desktop.interface icon-theme 'Tela-Dark'
 
 
 # - name: Install WhatsApp
