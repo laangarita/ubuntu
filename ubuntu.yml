@@ -21,6 +21,7 @@
       - ppa:ubuntuhandbook1/apps
       - ppa:webupd8team/atom
       - ppa:jonathonf/vim
+      - ppa:daniruiz/flat-remix
 
 
 ## Reduce overheating with TLP ##
@@ -29,7 +30,7 @@
 
   - name: Install Ubuntu packages
     apt:
-      name: ['preload', 'tlp', 'tlp-rdw', 'ubuntu-restricted-extras', 'gnome-tweak-tool', 'shutter', 'corebird', 'software-properties-common', 'apt-transport-https', 'wget', 'netcat']
+      name: ['preload', 'tlp', 'tlp-rdw', 'ubuntu-restricted-extras', 'gnome-tweak-tool', 'shutter', 'corebird', 'software-properties-common', 'apt-transport-https', 'wget', 'netcat', 'flat-remix']
       update_cache: yes
 
 
@@ -122,24 +123,29 @@
   - name: Set theme OSX Arc Darker
     shell: gsettings set org.gnome.desktop.interface gtk-theme "OSX-Arc-Darker"
 
-  - name: Create icon theme directory
-    file:
-      path: /home/langarita/.icons
-      state: directory
+
+  - name: Set icon theme Flat Remix Blue
+    shell: gsettings set org.gnome.desktop.interface icon-theme 'Flat-Remix-Blue'
 
 
-  - name: Copy Icon Theme (Tela-Dark)
-    copy:
-      src: ./Tela.tar.xz
-      dest: /home/langarita/.icons
+# - name: Create icon theme directory
+#   file:
+#     path: /home/langarita/.icons
+#     state: directory
 
 
-  - name: Extract icon theme
-    shell: tar xvf /home/langarita/.icons/Tela.tar.xz -C /home/langarita/.icons
+# - name: Copy Icon Theme (Tela-Dark)
+#   copy:
+#     src: ./Tela.tar.xz
+#     dest: /home/langarita/.icons
 
 
-  - name: Set icon theme Tela
-    shell: gsettings set org.gnome.desktop.interface icon-theme 'Tela-Dark'
+# - name: Extract icon theme
+#   shell: tar xvf /home/langarita/.icons/Tela.tar.xz -C /home/langarita/.icons
+
+
+# - name: Set icon theme Tela
+#   shell: gsettings set org.gnome.desktop.interface icon-theme 'Tela-Dark'
 
 
 # - name: Install WhatsApp
