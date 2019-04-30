@@ -36,8 +36,17 @@
 
   - name: Install Development Tools
     apt:
-      name: ['virtualbox', 'atom', 'vim', 'openjdk-11-jdk']
+      name: ['virtualbox', 'atom', 'vim', 'openjdk-11-jdk', 'docker.io', 'python-pip', 'nodejs', 'npm']
       update_cache: yes
+
+
+  - name: Install needed Python packages
+    pip:
+      name: docker-compose==1.9.0,docker-py
+
+
+  - name: Update NPM
+    shell: "npm install npm --global"
 
 
   - name: Start your laptop mode tools for Linux
@@ -109,6 +118,11 @@
     apt: 
       deb: /tmp/google-chrome-stable_current_amd64.deb
 
+
+  - name: Install iCloud Notes
+    snap:
+      name: icloud-notes-linux-client
+      state: present
 
   - name: Copy OSX Arc theme collection
     copy:
