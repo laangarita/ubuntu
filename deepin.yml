@@ -1,0 +1,102 @@
+---
+
+- name: Set up your Ubuntu environment
+  connection: local
+  gather_facts: false
+  hosts: localhost
+  tasks:
+
+
+  - name: Update your host using apt
+    apt:
+      update_cache: yes
+      upgrade: dist
+
+
+## Reduce overheating with TLP ##
+## Reduce power consumption with laptop-mode-tools ##
+
+
+  - name: Install Ubuntu packages
+    apt:
+      name: ['preload', 'tlp', 'tlp-rdw', 'shutter', 'corebird', 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'apt-transport-https', 'wget', 'netcat', 'timeshift', 'redshift', 'snapd']
+      update_cache: yes
+
+
+  - name: Install Development Tools
+    apt:
+      name: ['virtualbox', 'atom', 'vim', 'python-pip', 'nodejs', 'nodejs-bin', 'node', 'vagrant', 'code']
+      update_cache: yes
+
+
+
+  - name: Update NPM
+    shell: "npm install npm --global"
+
+
+  - name: Start your laptop mode tools for Linux
+    shell: "tlp start"
+    register: start_result
+    failed_when: (start_result.rc not in [ 0, 127 ])
+
+
+### Update Ansible v.2.2.x ###
+
+  - name: Add Ansible repo
+    copy:
+      dest: "/etc/apt/sources.list.d/ansible.list"
+      content: |
+        deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main
+
+
+  - name: Add Ansible Signing Key
+    shell: "apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367"
+
+
+  - name: Upgrade Ansible
+    apt:
+      name: ['ansible']
+
+### End of Ansible Update ###
+
+
+### Install Docker ###
+ 
+  - name: Add Docker repo
+    copy:
+      dest: "/etc/apt/sources.list.d/docker.list"
+      content: |
+        deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+
+
+  - name: Install docker
+    apt:
+      name: ['docker-ce'] 
+
+### End of Docker Install ###
+
+
+# - name: Install Apple Notes application
+#   snap:
+#     name: icloud-notes-linux-client
+#     state: present
+
+
+  - name: Copy OSX Arc theme collection
+    copy:
+      src: ./osx-arc-collection_1.4.7_amd64.deb
+      dest: /root/osx-arc-collection_1.4.7_amd64.deb
+
+
+  - name: Install theme (OSX-Arc-collection)
+    shell: apt install -y /root/osx-arc-collection_1.4.7_amd64.deb
+
+
+  - name: Remove packages that are no longer needed
+    apt:
+      autoclean: yes
+
+
+  - name: Remove dependencies that are no longer required
+    apt:
+      autoremove: yes
